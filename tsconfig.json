@@ -39,5 +39,12 @@
     "**/*.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "**/public/serwist**",
+    "**/public/sw**",
+    "**/public/worker**",
+    "**/public/fallback**",
+    "**/public/precache**"
+  ]
 }
