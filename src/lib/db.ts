@@ -26,8 +26,8 @@ export class TodoDB extends Dexie {
 
   deleteList(todoListId: number) {
     return this.transaction("rw", this.todoItems, this.todoLists, () => {
-      this.todoItems.where({ todoListId }).delete();
-      this.todoLists.delete(todoListId);
+      void this.todoItems.where({ todoListId }).delete();
+      void this.todoLists.delete(todoListId);
     });
   }
 }
