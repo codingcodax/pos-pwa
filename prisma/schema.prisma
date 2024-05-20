@@ -26,6 +26,14 @@ model Post {
     @@index([name])
 }
 
+model Todo {
+    id        Int      @id @default(autoincrement())
+    title     String
+    done      Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
