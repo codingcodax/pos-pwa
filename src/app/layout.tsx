@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
+import { StatusBanner } from "./_components/StatusBanner";
 
 const APP_NAME = "NJS App";
 const APP_DESCRIPTION = "Next.js + Serwist PWA";
@@ -42,6 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        <StatusBanner />
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
