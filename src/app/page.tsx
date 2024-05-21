@@ -24,10 +24,12 @@ const orderSchema = z.object({
 type OrderType = z.infer<typeof orderSchema>;
 
 const Home: NextPage = () => {
+  const utils = api.useUtils();
   const { data: orders } = api.order.get.useQuery();
   const { mutate: createOrder } = api.order.create.useMutation({
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+      utils.order.get.invalidate();
+      form.reset();
     },
     onError: (error) => {
       console.error(error);
