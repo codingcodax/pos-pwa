@@ -24,6 +24,7 @@ const orderSchema = z.object({
 type OrderType = z.infer<typeof orderSchema>;
 
 const Home: NextPage = () => {
+  const { data: orders } = api.order.get.useQuery();
   const { mutate: createOrder } = api.order.create.useMutation({
     onSuccess: (data) => {
       console.log(data);
@@ -51,6 +52,17 @@ const Home: NextPage = () => {
   return (
     <div>
       <p>online page</p>
+
+      <ol>
+        {orders?.map((order) => (
+          <li key={order.id} className="list-inside list-decimal">
+            <span>
+              {order.total}
+              {order.items.map((item) => ` ${item}`)}
+            </span>
+          </li>
+        ))}
+      </ol>
 
       <Form {...form}>
         <form className="max-w-sm" onSubmit={form.handleSubmit(onSubmit)}>
