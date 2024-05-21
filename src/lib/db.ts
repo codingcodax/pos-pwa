@@ -55,6 +55,12 @@ export class TodoDB extends Dexie {
       void this.orders.clear();
     });
   }
+
+  createOrder({ total, items }: OrderType) {
+    return this.transaction("rw", this.orders, () => {
+      void this.orders.add({ total, items });
+    });
+  }
 }
 
 export const db = new TodoDB();
