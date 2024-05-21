@@ -52,6 +52,7 @@ export default function Page() {
 
       <Button onClick={handleDeleteOrders}>Delete orders</Button>
       <Button onClick={resetDatabase}>Pupulate DB</Button>
+      <Button onClick={() => db.reset()}>Reset DB</Button>
 
       <ol>
         {orders?.map((order, index) => (
