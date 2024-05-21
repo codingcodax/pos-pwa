@@ -34,6 +34,13 @@ model Todo {
     updatedAt DateTime @updatedAt
 }
 
+model Order {
+    id        String   @id @default(cuid())
+    total     Float
+    items     String[]
+    createdAt DateTime @default(now())
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
