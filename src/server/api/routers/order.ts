@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const createSchema = z.object({
   total: z.number(),
@@ -7,7 +7,11 @@ const createSchema = z.object({
 });
 
 export const orderRouter = createTRPCRouter({
-  create: protectedProcedure.input(createSchema).mutation(({ ctx, input }) => {
+  get: publicProcedure.query(({ ctx }) => {
+    return ctx.db.order.findMany();
+  }),
+
+  create: publicProcedure.input(createSchema).mutation(({ ctx, input }) => {
     return ctx.db.order.create({
       data: {
         total: input.total,
