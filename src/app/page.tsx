@@ -14,6 +14,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { api } from "~/trpc/react";
 
 const orderSchema = z.object({
   total: z.string(),
@@ -23,6 +24,15 @@ const orderSchema = z.object({
 type OrderType = z.infer<typeof orderSchema>;
 
 const Home: NextPage = () => {
+  const { mutate: createOrder } = api.order.create.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const form = useForm<OrderType>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
@@ -32,7 +42,10 @@ const Home: NextPage = () => {
   });
 
   const onSubmit = (data: OrderType) => {
-    console.log(data);
+    const total = Number(data.total);
+    const items = data.items.split(" ");
+
+    createOrder({ total, items });
   };
 
   return (
@@ -40,7 +53,7 @@ const Home: NextPage = () => {
       <p>online page</p>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="max-w-sm" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="total"
