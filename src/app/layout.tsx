@@ -3,7 +3,7 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 
 const APP_NAME = "NJS App";
 const APP_DESCRIPTION = "Next.js + Serwist PWA";

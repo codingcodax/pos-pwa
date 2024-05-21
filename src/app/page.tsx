@@ -27,8 +27,8 @@ const Home: NextPage = () => {
   const utils = api.useUtils();
   const { data: orders } = api.order.get.useQuery();
   const { mutate: createOrder } = api.order.create.useMutation({
-    onSuccess: () => {
-      utils.order.get.invalidate();
+    onSuccess: async () => {
+      await utils.order.get.invalidate();
       form.reset();
     },
     onError: (error) => {
