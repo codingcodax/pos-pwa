@@ -18,4 +18,14 @@ export async function populate() {
       title: "Have some sleep",
     },
   ]);
+  await db.orders.bulkAdd([
+    {
+      total: 10,
+      items: ["milk", "eggs"],
+    },
+    {
+      total: 20,
+      items: ["bread", "eggs"],
+    },
+  ]);
 }
