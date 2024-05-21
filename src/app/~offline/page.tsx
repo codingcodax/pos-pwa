@@ -1,14 +1,36 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Offline",
-};
+import { Button } from "~/components/ui/button";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db, resetDatabase } from "~/lib/db";
 
 export default function Page() {
+  const orders = useLiveQuery(() => db.orders.toArray());
+
+  const handleDeleteOrders = async () => {
+    await db.deleteOrders();
+  };
+
   return (
-    <>
-      <h1>This is offline fallback page</h1>
-      <h2>When offline, any page route will fallback to this page</h2>
-    </>
+    <div>
+      <p>offline page</p>
+
+      <Button onClick={handleDeleteOrders}>Delete orders</Button>
+      <Button onClick={resetDatabase}>Pupulate DB</Button>
+
+      <ol>
+        {orders?.map((order, index) => (
+          <li
+            key={`${order.total}-${index}`}
+            className="list-inside list-decimal"
+          >
+            <span>
+              {order.total}
+              {order.items.map((item) => ` ${item}`)}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
