@@ -15,6 +15,9 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
+import { useNetwork } from "~/hooks/useNetwork";
+import { db } from "~/lib/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const orderSchema = z.object({
   total: z.string(),
@@ -25,7 +28,11 @@ type OrderType = z.infer<typeof orderSchema>;
 
 const Home: NextPage = () => {
   const utils = api.useUtils();
-  const { data: orders } = api.order.get.useQuery();
+  const { isOnline } = useNetwork();
+  const { data: ordersFromCloud } = api.order.get.useQuery(undefined, {
+    enabled: isOnline,
+  });
+  const ordersFromLocal = useLiveQuery(() => db.orders.toArray());
   const { mutate: createOrder } = api.order.create.useMutation({
     onSuccess: async () => {
       await utils.order.get.invalidate();
@@ -44,11 +51,17 @@ const Home: NextPage = () => {
     },
   });
 
-  const onSubmit = (data: OrderType) => {
+  const onSubmit = async (data: OrderType) => {
     const total = Number(data.total);
     const items = data.items.split(" ");
 
-    createOrder({ total, items });
+    if (isOnline) {
+      createOrder({ total, items });
+      return;
+    }
+
+    await db.createOrder({ total, items });
+    form.reset();
   };
 
   return (
@@ -56,8 +69,11 @@ const Home: NextPage = () => {
       <p>online page</p>
 
       <ol>
-        {orders?.map((order) => (
-          <li key={order.id} className="list-inside list-decimal">
+        {(ordersFromCloud ?? ordersFromLocal)?.map((order, index) => (
+          <li
+            key={`${order.total}-${index}`}
+            className="list-inside list-decimal"
+          >
             <span>
               {order.total}
               {order.items.map((item) => ` ${item}`)}
